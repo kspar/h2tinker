@@ -1,7 +1,7 @@
 import socket
 
-import log
-from h2_connection import H2Connection
+from h2tinker import log
+from h2tinker.h2_connection import H2Connection
 
 
 class H2PlainConnection(H2Connection):

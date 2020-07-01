@@ -12,6 +12,11 @@ class LogLevel(enum.IntEnum):
 GLOBAL_LOG_LEVEL = LogLevel.INFO
 
 
+def set_global_log_level(log_level: LogLevel):
+    global GLOBAL_LOG_LEVEL
+    GLOBAL_LOG_LEVEL = log_level
+
+
 def _print_timed_formatted_msg(msg: str, *msg_args: object):
     formatted_msg = msg.format(*msg_args)
     print('{} {}'.format(round(time.time(), 5), formatted_msg))

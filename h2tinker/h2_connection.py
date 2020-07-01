@@ -6,9 +6,9 @@ import scapy.contrib.http2 as h2
 from scapy.compat import hex_bytes
 from scapy.data import MTU
 
-import log
-from assrt import assert_error
-from frames import is_frame_type, has_ack_set, create_settings_frame
+from h2tinker import log
+from h2tinker.assrt import assert_error
+from h2tinker.frames import is_frame_type, has_ack_set, create_settings_frame
 
 
 class H2Connection(ABC):
@@ -80,6 +80,7 @@ class H2Connection(ABC):
             frames = self._recv_frames()
             for f in frames:
                 log.info("Read frame:")
+                # TODO: respect log level
                 f.show()
 
     def send_frames(self, *frames: h2.H2Frame):
