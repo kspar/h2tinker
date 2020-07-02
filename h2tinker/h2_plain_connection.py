@@ -10,7 +10,7 @@ class H2PlainConnection(H2Connection):
         super().__init__()
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    def setup(self, host: str, port: int):
+    def setup(self, host: str, port: int = 80):
         super().setup(host, port)
         self.host = host
         self.port = port
