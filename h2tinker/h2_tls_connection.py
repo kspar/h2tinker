@@ -20,6 +20,7 @@ class H2TLSConnection(H2Connection):
         self.host = host
         self.port = port
 
+        # TLS setup partly adapted from https://github.com/secdev/scapy/blob/master/doc/notebooks/HTTP_2_Tuto.ipynb
         addrinfos = socket.getaddrinfo(host, port, type=socket.SOCK_STREAM, proto=socket.IPPROTO_TCP)
         assert_error(len(addrinfos) > 0, 'No TCP socket info available for host {} and port {}', host, port)
         addrinfo = addrinfos[0]
