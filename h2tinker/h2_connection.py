@@ -73,15 +73,15 @@ class H2Connection(ABC):
         req_frameseq.frames = dep_req_frames
         return req_frameseq
 
-    def infinite_read_loop(self):
+    def infinite_read_loop(self, print_frames: bool = True):
         self._check_setup_completed()
         log.info("Infinite read loop starting...")
         while True:
             frames = self._recv_frames()
-            for f in frames:
-                log.info("Read frame:")
-                # TODO: respect log level
-                f.show()
+            if print_frames:
+                for f in frames:
+                    log.info("Read frame:")
+                    f.show()
 
     def send_frames(self, *frames: h2.H2Frame):
         self._check_setup_completed()
