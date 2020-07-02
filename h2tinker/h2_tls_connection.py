@@ -10,12 +10,21 @@ from h2tinker.assrt import assert_error
 
 
 class H2TLSConnection(H2Connection):
+    """
+    TLS-secured HTTP/2 connection.
+    """
 
     def __init__(self):
         super().__init__()
         assert_error(bool(ssl.HAS_ALPN), 'TLS ALPN extension not available but it is required for HTTP/2 over TLS')
 
     def setup(self, host: str, port: int = 443):
+        """
+        Set the connection up by creating the TCP connection, performing the TLS handshake with ALPN
+        selected protocol h2 and finally performing the HTTP/2 handshake.
+        :param host: host where to connect, e.g. example.com or 127.0.0.1
+        :param port: TCP port where to connect
+        """
         super().setup(host, port)
         self.host = host
         self.port = port

@@ -12,6 +12,10 @@ from h2tinker.frames import is_frame_type, has_ack_set, create_settings_frame
 
 
 class H2Connection(ABC):
+    """
+    Base class for HTTP/2 connections.
+    """
+
     PREFACE = hex_bytes('505249202a20485454502f322e300d0a0d0a534d0d0a0d0a')
 
     def __init__(self, ):
@@ -31,7 +35,15 @@ class H2Connection(ABC):
     def create_request_frames(self, method: str, path: str, stream_id: int,
                               headers: T.Dict[str, str] = None,
                               body: T.Optional[str] = None) -> h2.H2Seq:
-
+        """
+        Create HTTP/2 frames representing a HTTP request.
+        :param method: HTTP request method, e.g. GET
+        :param path: request path, e.g. /example/path
+        :param stream_id: stream ID to use for this request, e.g. 1
+        :param headers: request headers
+        :param body: request body
+        :return: frame sequence consisting of a single HEADERS frame, potentially followed by CONTINUATION and DATA frames
+        """
         header_table = h2.HPackHdrTable()
         req_str = (':method {}\n'
                    ':path {}\n'
@@ -54,7 +66,18 @@ class H2Connection(ABC):
                                         dependency_is_exclusive: bool = False,
                                         headers: T.Dict[str, str] = None,
                                         body: T.Optional[str] = None) -> h2.H2Seq:
-
+        """
+        Create HTTP/2 frames representing a HTTP request that depends on another request (stream).
+        :param method: HTTP request method, e.g. GET
+        :param path: request path, e.g. /example/path
+        :param stream_id: stream ID to use for this request, e.g. 1
+        :param dependency_stream_id: ID of the stream that this request (stream) will depend upon
+        :param dependency_weight: weight of the dependency
+        :param dependency_is_exclusive: whether the dependency is exclusive
+        :param headers: request headers
+        :param body: request body
+        :return: frame sequence consisting of a single HEADERS frame, potentially followed by CONTINUATION and DATA frames
+        """
         req_frameseq = self.create_request_frames(method, path, stream_id, headers, body)
         dep_req_frames = []
         for f in req_frameseq.frames:
@@ -74,6 +97,10 @@ class H2Connection(ABC):
         return req_frameseq
 
     def infinite_read_loop(self, print_frames: bool = True):
+        """
+        Start an infinite loop that reads and possibly prints received frames.
+        :param print_frames: whether to print received frames
+        """
         self._check_setup_completed()
         log.info("Infinite read loop starting...")
         while True:
@@ -84,10 +111,18 @@ class H2Connection(ABC):
                     f.show()
 
     def send_frames(self, *frames: h2.H2Frame):
+        """
+        Send frames on this connection.
+        :param frames: 1 or more frames to send
+        """
         self._check_setup_completed()
         self._send_frames(*frames)
 
     def recv_frames(self) -> T.List[h2.H2Frame]:
+        """
+        Synchronously receive frames. Block if there aren't any frames to read.
+        :return: list of received frames
+        """
         self._check_setup_completed()
         return self._recv_frames()
 
